@@ -50,7 +50,6 @@ public class ActiveController {
             if (iRepActive.getByNumber(number).getCode()==Integer.valueOf(code)){
                 if (iRepUser.existsByPhoneNumber(number)&&iRepUser.findByPhoneNumber(number).getStatus()!=2){
                     activeResualt.setError(null);
-                    activeResualt.setStatus("OK");
                     activeResualt.setMessage(null);
                     activeResualt.setStatus("1");
                     activeResualt.setTokenId(iRepUser.findByPhoneNumber(number).getTokenId());
@@ -59,10 +58,11 @@ public class ActiveController {
                     User user=new User();
                     user.setPhoneNumber(number);
                     SecureRandom random = new SecureRandom();
-                    byte bytes[] = new byte[20];
+                    byte bytes[] = new byte[2000];
                     random.nextBytes(bytes);
                     String token = bytes.toString();
                     user.setTokenId(token);
+                    user.setStatus(2);
                     iRepUser.save(user);
                     activeResualt.setError(null);
                     activeResualt.setStatus("OK");
