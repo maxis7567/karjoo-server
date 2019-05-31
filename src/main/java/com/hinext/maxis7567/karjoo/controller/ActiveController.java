@@ -29,19 +29,24 @@ public class ActiveController {
 
     @GetMapping("/create/{number}")
     public Active createNumber(@PathVariable String number){
-        Active active=new Active();
-        active.setCode(ThreadLocalRandom.current().nextInt(1000, 9999 + 1));
-        active.setNumber(number);
-        active.setStatus(0);
-        iRepActive.save(active);
-        Timer timer=new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                iRepActive.delete(active);
-            }
-        },380000);
-        return active;
+        if (iRepActive.existsByNumber(number)){
+            return iRepActive.getByNumber(number);
+        }else {
+            Active active=new Active();
+            active.setCode(ThreadLocalRandom.current().nextInt(1000, 9999 + 1));
+            active.setNumber(number);
+            active.setStatus(0);
+            iRepActive.save(active);
+            Timer timer=new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    iRepActive.delete(active);
+                }
+            },380000);
+            return active;
+        }
+
     }
     @GetMapping("/{code}/{number}")
     public ActiveResualt active(@PathVariable String code,@PathVariable String number){
@@ -52,6 +57,13 @@ public class ActiveController {
                     activeResualt.setError(null);
                     activeResualt.setMessage(null);
                     activeResualt.setStatus("1");
+                    activeResualt.setTokenId(iRepUser.findByPhoneNumber(number).getTokenId());
+                    return activeResualt;
+                }else if (iRepUser.existsByPhoneNumber(number)){
+                    activeResualt.setError(null);
+                    activeResualt.setStatus("OK");
+                    activeResualt.setMessage(null);
+                    activeResualt.setStatus("2");
                     activeResualt.setTokenId(iRepUser.findByPhoneNumber(number).getTokenId());
                     return activeResualt;
                 }else {

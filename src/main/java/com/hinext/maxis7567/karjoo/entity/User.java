@@ -60,7 +60,7 @@ public class User   {
     private String address;
 
     @Column(name = "type")
-    private int type;
+    private int type;//1 karjoo  2 karfarma
 
     @Column(name = "status")
     private int status;

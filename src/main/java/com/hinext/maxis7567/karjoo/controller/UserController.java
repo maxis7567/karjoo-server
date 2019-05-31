@@ -64,6 +64,7 @@ public class UserController {
             user.setCityId(cityId);
             user.setGender(gender);
             user.setType(type);
+            user.setStatus(1);
             user.setImageUrl("/uploads/"+newFileName);
             iRepUser.save(user);
             result.setStatus("Ok");

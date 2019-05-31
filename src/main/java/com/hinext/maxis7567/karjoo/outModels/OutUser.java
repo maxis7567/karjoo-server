@@ -1,16 +1,27 @@
 package com.hinext.maxis7567.karjoo.outModels;
 
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
+@Getter
 public class OutUser  {
-    private final String bError;
-    private final String bStatus;
-    private final String bMessage;
-
-    public OutUser(String name, String lName, String address, String province, String county, String city, int type, int status, String image, int gender, String bStatus, String bmessage, String bError) {
+    private  String bError;
+    private  String bStatus;
+    private  String bMessage;
+    private String name;
+    private String lastName;
+    private String address;
+    private String province;
+    private String county;
+    private String city;
+    private int type;
+    private int status;
+    private String image;
+    private int gender;
+    public OutUser(String name, String lastName, String address, String province, String county, String city, int type, int status, String image, int gender, String bStatus, String bmessage, String bError) {
         this.name = name;
-        this.lName = lName;
+        this.lastName = lastName;
         this.address = address;
         this.province = province;
         this.county = county;
@@ -23,15 +34,4 @@ public class OutUser  {
         this.bStatus=bStatus;
         this.bMessage=bmessage;
     }
-
-    private String name;
-    private String lName;
-    private String address;
-    private String province;
-    private String county;
-    private String city;
-    private int type;
-    private int status;
-    private String image;
-    private int gender;
 }
