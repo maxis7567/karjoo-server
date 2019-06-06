@@ -86,11 +86,11 @@ public class UserController {
             address.setCity(iRepCity.getOne(user.getCityId()).getName());
             address.setCounty(iRepCounty.getOne(iRepCity.getOne(user.getCityId()).getCountyId()).getName());
             address.setProvince(iRepProvince.getOne(iRepCounty.getOne(iRepCity.getOne(user.getCityId()).getCountyId()).getProvinceId()).getName());
-            return new OutUser(user.getFName(),
+            return new OutUser(user.getFName()+" "+
                     user.getLName(),user.getAddress(),address.getProvince()
             ,address.getCounty(),address.getCity(),user.getType(),user.getStatus(),user.getImageUrl(),user.getGender(),"OK",null,null);
         }else {
-            return new OutUser(null,null,null,null,null,null,0,0,
+            return new OutUser(null,null,null,null,null,0,0,
                     null,0,"Failed","دسترسی نا معتبر","Token Not Exist");
         }
     }

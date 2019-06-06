@@ -10,7 +10,6 @@ public class OutUser  {
     private  String bStatus;
     private  String bMessage;
     private String name;
-    private String lastName;
     private String address;
     private String province;
     private String county;
@@ -19,9 +18,8 @@ public class OutUser  {
     private int status;
     private String image;
     private int gender;
-    public OutUser(String name, String lastName, String address, String province, String county, String city, int type, int status, String image, int gender, String bStatus, String bmessage, String bError) {
+    public OutUser(String name, String address, String province, String county, String city, int type, int status, String image, int gender, String bStatus, String bmessage, String bError) {
         this.name = name;
-        this.lastName = lastName;
         this.address = address;
         this.province = province;
         this.county = county;
