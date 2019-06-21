@@ -9,5 +9,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface IRepOfferJob extends JpaRepository<OfferJob, Integer> {
-    List<OfferJob> findAllByJobsId(Integer id, Pageable pageable);
+    List<OfferJob> findAllByOfferId(Integer id, Pageable pageable);
+    List<OfferJob> findAllByOfferId(Integer id);
 }

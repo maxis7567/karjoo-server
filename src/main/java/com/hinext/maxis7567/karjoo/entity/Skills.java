@@ -13,7 +13,7 @@ import java.time.*;
 @Setter
 @Getter
 @Entity
-@Table(name = "skills")
+@Table(name = "Skills")
 public class Skills {
 
 
