@@ -7,5 +7,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface IRepRequest extends JpaRepository<Request, Integer> {
-
+        List<Request> findAllByUserId(int userId);
 }

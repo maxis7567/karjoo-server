@@ -1,6 +1,7 @@
 package com.hinext.maxis7567.karjoo.controller;
 
 import com.hinext.maxis7567.karjoo.entity.*;
+import com.hinext.maxis7567.karjoo.inModel.Skils;
 import com.hinext.maxis7567.karjoo.outModels.File;
 import com.hinext.maxis7567.karjoo.outModels.HomeData;
 import com.hinext.maxis7567.karjoo.outModels.OutRequest;
@@ -9,14 +10,17 @@ import com.hinext.maxis7567.karjoo.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static com.hinext.maxis7567.karjoo.controller.UserController.LOCAL_STORAGE_DIRECTORY;
 
 @RestController
 @RequestMapping("/v1")
@@ -66,6 +70,7 @@ public class RequestController {
             newHomeData.setDate(requestList.get(i).getDateModified().getTime());
             newHomeData.setImage(user.getImageUrl());
             newHomeData.setId(requestList.get(i).getId());
+            newHomeData.setTitle(requestList.get(i).getTitle());
             homeDataList.add(newHomeData);
         }
         List<Offer> offerList = iRepOffer.findAll(pageable).getContent();
@@ -80,6 +85,7 @@ public class RequestController {
             newHomeData.setDate(offerList.get(i).getDateModified().getTime());
             newHomeData.setImage(user.getImageUrl());
             newHomeData.setId(offerList.get(i).getId());
+            newHomeData.setTitle(offerList.get(i).getTitle());
             homeDataList.add(newHomeData);
         }
         homeDataList.sort(Comparator.comparing(HomeData::getDate).reversed());
@@ -102,6 +108,7 @@ public class RequestController {
             newHomeData.setDate(requestList.get(i).getDateModified().getTime());
             newHomeData.setImage(user.getImageUrl());
             newHomeData.setId(requestList.get(i).getId());
+            newHomeData.setTitle(requestList.get(i).getTitle());
             homeDataList.add(newHomeData);
         }
         return homeDataList;
@@ -123,6 +130,7 @@ public class RequestController {
             newHomeData.setDate(offerList.get(i).getDateModified().getTime());
             newHomeData.setImage(user.getImageUrl());
             newHomeData.setId(offerList.get(i).getId());
+            newHomeData.setTitle(offerList.get(i).getTitle());
             homeDataList.add(newHomeData);
         }
         return homeDataList;
@@ -154,6 +162,7 @@ public class RequestController {
             newHomeData.setDate(requestList.get(i).getDateModified().getTime());
             newHomeData.setImage(user.getImageUrl());
             newHomeData.setId(requestList.get(i).getId());
+            newHomeData.setTitle(requestList.get(i).getTitle());
             homeDataList.add(newHomeData);
         }
         return homeDataList;
@@ -185,6 +194,7 @@ public class RequestController {
             newHomeData.setDate(offerList.get(i).getDateModified().getTime());
             newHomeData.setImage(user.getImageUrl());
             newHomeData.setId(offerList.get(i).getId());
+            newHomeData.setTitle(offerList.get(i).getTitle());
             homeDataList.add(newHomeData);
         }
         return homeDataList;
@@ -197,13 +207,13 @@ public class RequestController {
         User user = iRepUser.getOne(request.getUserId());
         outRequest.setAddress(user.getAddress());
         outRequest.setNumber(request.getPhoneNumber());
-        List<Skills> skillsList = new ArrayList<>();
+        List<Skils> skillsList = new ArrayList<>();
         List<RequestSkills> requestSkillsList = iRepRequestSkills.findAllByRequestId(request.getId());
         for (int i = 0; i < requestSkillsList.size(); i++) {
             com.hinext.maxis7567.karjoo.entity.Skills skills = (iRepSkills.getOne(requestSkillsList.get(i).getSkillsId()));
-            Skills skills1 = new Skills();
-            skills1.setSkills(skills.getName());
-            skills1.setDesc(requestSkillsList.get(i).getDesc());
+            Skils skills1 = new Skils();
+            skills1.setName(skills.getName());
+            skills1.setDescribe(requestSkillsList.get(i).getDesc());
             skillsList.add(skills1);
         }
         List<File> fileList=new ArrayList<>();
@@ -228,12 +238,12 @@ public class RequestController {
         User user = iRepUser.getOne(offer.getUserId());
         outRequest.setAddress(user.getAddress());
         outRequest.setNumber(offer.getPhoneNumber());
-        List<Skills> skillsList = new ArrayList<>();
+        List<Skils> skillsList = new ArrayList<>();
         List<OfferJob> requestSkillsList = iRepOfferJob.findAllByOfferId(offer.getId());
         for (int i = 0; i < requestSkillsList.size(); i++) {
-            Jobs skills = (iRepJobs.getOne(requestSkillsList.get(i).getOfferId()));
-            Skills skills1 = new Skills();
-            skills1.setSkills(skills.getName());
+            Jobs skills = (iRepJobs.getOne(requestSkillsList.get(i).getJobsId()));
+            Skils skills1 = new Skils();
+            skills1.setName(skills.getName());
             skillsList.add(skills1);
         }
         List<File> fileList=new ArrayList<>();
@@ -251,5 +261,41 @@ public class RequestController {
         iRepOffer.save(offer);
         return outRequest;
     }
+    @GetMapping("/tags/add/{name}/{type}")
+    public String addSkills(@PathVariable String name,@PathVariable int type){
+        if (type==1){
+            com.hinext.maxis7567.karjoo.entity.Skills skills=new com.hinext.maxis7567.karjoo.entity.Skills();
+            skills.setName(name);
+            return String.valueOf(iRepSkills.save(skills).getId());
 
+        }else {
+            Jobs jobs=new Jobs();
+            jobs.setName(name);
+            return String.valueOf(iRepJobs.save(jobs).getId());
+        }
+    }
+    @PostMapping("/upload")
+    public String upload(@RequestHeader HashMap<String, String> header,
+                           @RequestParam("file") MultipartFile file) {
+        User user = iRepUser.findByTokenId(header.get("token"));
+        String newFileName = String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9999 + 1)) + file.getOriginalFilename();
+        java.io.File convFile = new java.io.File(LOCAL_STORAGE_DIRECTORY + newFileName);
+        try {
+            file.transferTo(convFile);
+        } catch (IOException ignored) {
+
+        }
+        Files files=new Files();
+        files.setFileName(newFileName);
+        files.setFileUrl("/uploads/" + newFileName);
+        files.setDesc(header.get("desc"));
+        if (user.getType()==1){
+            files.setRequestId(Integer.valueOf(header.get("id")));
+        }else {
+            files.setOfferId(Integer.valueOf(header.get("id")));
+
+        }
+        iRepFile.save(files);
+        return "{\"status\":\"ok\"}";
+    }
 }
