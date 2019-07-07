@@ -178,7 +178,7 @@ public class RequestController {
     public List<HomeData> getofferSearchId(@PathVariable int id, @PathVariable int page) {
         Pageable pageable = PageRequest.of(page - 1, 5);
         List<Offer> offerList = new ArrayList<>();
-        List<OfferJob> offerJobList = iRepOfferJob.findAllByOfferId(id, pageable);
+        List<OfferJob> offerJobList = iRepOfferJob.findAllByJobsId(id, pageable);
         for (int i = 0; i < offerJobList.size(); i++) {
             offerList.add(iRepOffer.getOne(offerJobList.get(i).getOfferId()));
         }
@@ -276,7 +276,7 @@ public class RequestController {
     }
     @PostMapping("/upload")
     public String upload(@RequestHeader HashMap<String, String> header,
-                           @RequestParam("file") MultipartFile file) {
+                           @RequestParam("file") MultipartFile file){
         User user = iRepUser.findByTokenId(header.get("token"));
         String newFileName = String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9999 + 1)) + file.getOriginalFilename();
         java.io.File convFile = new java.io.File(LOCAL_STORAGE_DIRECTORY + newFileName);

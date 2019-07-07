@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface IRepOfferJob extends JpaRepository<OfferJob, Integer> {
     List<OfferJob> findAllByOfferId(Integer id, Pageable pageable);
+    List<OfferJob> findAllByJobsId(Integer id, Pageable pageable);
     List<OfferJob> findAllByOfferId(Integer id);
 }

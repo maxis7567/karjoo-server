@@ -13,7 +13,7 @@
     <version>0.0.1</version>
     <name>karjoo</name>
     <description>this is a job finder project</description>
-
+    <packaging>war</packaging>
     <properties>
         <java.version>1.8</java.version>
     </properties>
